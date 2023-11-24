@@ -1,7 +1,16 @@
+import Navbar from "./Navbar";
+import SearchBar from "./SearchBar";
+import Table from "./Table";
+import "./App.css";
 
 function App() {
-  return 
-
+  return (
+    <main>
+      <Navbar />
+      <SearchBar />
+      <Table />
+    </main>
+  );
 }
 
 export default App;

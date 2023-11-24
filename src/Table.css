@@ -1,0 +1,26 @@
+.table-buttons {
+    cursor: pointer;
+    display: flex;
+    padding: 15% 0% 0% 0%;
+    justify-content: center;
+    height: 120px;
+    width: 130px;
+    font-size: 1.4rem;
+    border-radius: 5%;
+    border: none;
+    
+}
+
+tbody {
+    display: flex;
+    flex-direction: column;
+}
+
+tr {
+    display: flex;
+    /* margin: 10px; */
+    justify-content: space-between;
+}
+td {
+    margin: 1rem;
+}

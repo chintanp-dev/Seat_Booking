@@ -1,0 +1,41 @@
+.header {
+  margin-bottom: 2rem;
+}
+
+.merge-table {
+    margin: 0% 0% 2% 0%;
+    padding-left: 3rem;
+    font-size: 3rem;
+  }
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.main-input {
+  width: 75%;
+  height: 70px;
+  font-size: 2rem;
+  size: 2rem;
+  padding-left: 0.5rem;
+}
+
+.merge-button {
+  cursor: pointer;
+  color: white;
+  font-size: 1.5rem;
+  background-color: rgb(81, 81, 218);
+  border-radius: 5%;
+  border: none;
+  size: 1rem;
+  width: 10rem;
+}
+
+
+
+placeholder {
+  color: blue;
+}
