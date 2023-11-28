@@ -1,31 +1,59 @@
 import { useState } from "react";
 import "./Table.css";
 
-function Box({ value, onBoxClick }) {
+function Box({ value, onBoxClick, className }) {
+  const [visible, invisible] = useState();
+
   return (
-    <button className="table-buttons" onClick={onBoxClick}>
+    <button
+      className={` ${className ? "invisible" : "table-buttons"}`}
+      onClick={onBoxClick}
+    >
       Table{value}
     </button>
   );
 }
 
+// <button className={"table-buttons invisible"} onClick={onBoxClick}>
+//   Table{value}
+// </button>
+
 function Table() {
-//   let num = 6;
+  //const [tables, setTables] = useState([]);
+  let tables = [];
+  let numOfRow = 6;
+  let numOfColumn = 5;
+  let numOfRowCol = numOfRow * numOfColumn;
 
-  const [boxes, setBoxes] = useState(Array(30).fill());
+  for (let i = 1; i <= numOfRowCol; i++) {
+    tables.push(<Box key={i} value={i} />);
+  }
 
-  function onClickHandler(i) {
-    console.log("Clicked!");
+  // function handleButtonClick(e) {
+  //   console.log("clicked");
+  //   }
+
+  const [boxes /*setBoxes*/] = useState(Array(numOfRowCol).fill());
+
+  const [timeInput, setTimeInput] = useState({
+    id: Math.random(),
+    hour: "",
+    minute: "",
+    second: "",
+  });
+
+  const [updateTime, setUpdateTime] = useState();
+
+  function onClickHandler() {
+    // return <Box className={data} />;
+    console.log("clicked");
   }
 
   const row = (row) => (
     <tr key={row}>
-      {[...Array(6).keys()].map((column) => (
+      {[...Array(numOfRow).keys()].map((column) => (
         <td key={column}>
-          <Box
-            value={boxes[row * 6 + column]}
-            onBoxClick={() => onClickHandler(row * 6 + column)}
-          />
+          <Box value={""} onBoxClick={() => onClickHandler()} />
         </td>
       ))}
     </tr>
@@ -34,7 +62,12 @@ function Table() {
   return (
     <>
       <table>
-        <tbody>{[...Array(5).keys()].map(row)}</tbody>
+        <tbody>
+          <td>
+            {[...Array(numOfColumn).keys(tables)].map(row)}
+          </td>
+          
+        </tbody>
       </table>
     </>
   );

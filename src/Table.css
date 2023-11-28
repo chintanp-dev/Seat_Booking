@@ -8,7 +8,20 @@
     font-size: 1.4rem;
     border-radius: 5%;
     border: none;
-    
+}
+
+
+.invisible {
+    cursor: pointer;
+    /* display: none; */
+    padding: 0% 0% 15% 0%;
+    justify-content: center;
+    height: 120px;
+    width: 130px;
+    font-size: 1.4rem;
+    border-radius: 5%;
+    border: none;
+    background-color: blanchedalmond;
 }
 
 tbody {

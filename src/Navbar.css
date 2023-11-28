@@ -17,10 +17,26 @@ li {
     list-style: none;
 }
 
-.round {
+.round-red {
     width:  20px;
     height: 20px;
     margin-left: 1rem;
     background-color:  red;
+    border-radius: 100%;
+}
+
+.round-gray {
+    width:  20px;
+    height: 20px;
+    margin-left: 1rem;
+    background-color:  gray;
+    border-radius: 100%;
+}
+
+.round-blue {
+    width:  20px;
+    height: 20px;
+    margin-left: 1rem;
+    background-color: rgb(81, 81, 218);
     border-radius: 100%;
 }
