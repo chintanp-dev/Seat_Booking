@@ -70,23 +70,36 @@ function Table() {
     </table>
   );
 
+  const [hour, setHour] = useState(0);
+  const [minute, setMinute] = useState(0);
+  const [second, setSecond] = useState(5);
 
-
-  
-
-  const [time, setTime] = useState(5);
   let timerId = null;
 
   const startTimer = () => {
     if (!timerId) {
       timerId = setInterval(() => {
-        setTime((prevTime) => {
-          const newTime = prevTime - 1;
-          if (newTime <= 0) {
-            stopTimer(); 
-            return 0; 
+        setSecond((prevSecond) => {
+          if (prevSecond > 0) {
+            return prevSecond - 1;
+          } else {
+            setSecond(59);
+            setMinute((prevMinute) => {
+              if (prevMinute > 0) {
+                return prevMinute - 1;
+              } else {
+                setMinute(59);
+                setHour(
+                  (prevHour) => (
+                    prevHour > 0 ? prevHour - 1 : setSecond(0),
+                    setMinute(0),
+                    setHour(0)
+                  )
+                );
+              }
+              return prevMinute;
+            });
           }
-          return newTime;
         });
       }, 1000);
     }
@@ -99,18 +112,45 @@ function Table() {
 
   useEffect(() => {
     startTimer();
-    return () => stopTimer();
+
+    return () => {
+      stopTimer();
+    };
   }, []);
 
+  //-------------------------------------------------------------------------
 
+  // only one for Second
 
+  // const [second, setSecond] = useState(5);
+  // let secondId = null;
 
+  // const startSecondTimer = () => {
+  //   if (!secondId) {
+  //     secondId = setInterval(() => {
+  //       setSecond((prevSecond) => {
+  //         const newSecond = prevSecond - 1;
+  //         if (newSecond <= 0) {
+  //           stopSecondTimer();
+  //           return 0;
+  //         }
+  //         return newSecond;
+  //       });
+  //     }, 1000);
+  //   }
+  // };
 
+  // const stopSecondTimer = () => {
+  //   clearInterval(secondId);
+  //   secondId = null;
+  // };
 
+  // useEffect(() => {
+  //   startSecondTimer();
+  //   return () => stopSecondTimer();
+  // }, []);
 
-
-
-
+  //-------------------------------------------------------------------------------
 
   //   let countDownDate = 10
 
@@ -132,11 +172,13 @@ function Table() {
 
   //   let x = setInterval(timer, 1000);
 
+  //---------------------------------------------------------------------
+
   return (
     <>
       <div>
-        <span id="hour">00</span> : <span id="minute">00</span> :
-        <span id="second"> {time}</span>
+        <span id="hour">{hour}</span> : <span id="minute">{minute}</span> :
+        <span id="second"> {second}</span>
       </div>
       {/* <p>  {hours} {minutes} {seconds}</p> */}
       updateTime ? (
