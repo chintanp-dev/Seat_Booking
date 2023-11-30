@@ -74,3 +74,34 @@ function Table() {
 }
 
 export default Table;
+
+
+
+
+
+
+// const FilteredList = () => {
+//  const [query, setQuery] = useState('');
+//  const [list, setList] = useState([]);
+
+//  const handleInputChange = (event) => {
+//     setQuery(event.target.value);
+//  };
+
+//  const filteredList = list.filter((item) => {
+//     return item.toLowerCase().includes(query.toLowerCase());
+//  });
+
+//  return (
+//     <div>
+//       <input type="text" placeholder="Search" value={query} onChange={handleInputChange} />
+//       <ul>
+//         {filteredList.map((item, index) => (
+//           <li key={index}>{item}</li>
+//         ))}
+//       </ul>
+//     </div>
+//  );
+// };
+
+// export default FilteredList;

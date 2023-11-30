@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "./Table.css";
 
 function Box({ value, onBoxClick, className }) {
@@ -25,7 +25,7 @@ function Table() {
   let refMinute = useRef();
   let refSecond = useRef();
 
-  const handleInputChange = (event) => {
+  const inputChangeOnBook = (event) => {
     event.preventDefault();
     refHour.current.value = "";
     refMinute.current.value = "";
@@ -40,7 +40,7 @@ function Table() {
   //   console.log("clicked");
   //   }
 
-  const [boxes /*setBoxes*/] = useState(Array(numOfRowCol).fill());
+  // const [boxes /*setBoxes*/] = useState(Array(numOfRowCol).fill());
 
   const [timeInput, setTimeInput] = useState({
     id: Math.random(),
@@ -49,7 +49,7 @@ function Table() {
     second: "",
   });
 
-  const [updateTime, setUpdateTime] = useState();
+  // const [updateTime, setUpdateTime] = useState();
 
   function onClickHandler() {
     // return <Box className={data} />;
@@ -70,9 +70,77 @@ function Table() {
     </table>
   );
 
+
+
+  
+
+  const [time, setTime] = useState(5);
+  let timerId = null;
+
+  const startTimer = () => {
+    if (!timerId) {
+      timerId = setInterval(() => {
+        setTime((prevTime) => {
+          const newTime = prevTime - 1;
+          if (newTime <= 0) {
+            stopTimer(); 
+            return 0; 
+          }
+          return newTime;
+        });
+      }, 1000);
+    }
+  };
+
+  const stopTimer = () => {
+    clearInterval(timerId);
+    timerId = null;
+  };
+
+  useEffect(() => {
+    startTimer();
+    return () => stopTimer();
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
+  //   let countDownDate = 10
+
+  //   function timer() {
+  //     // let now = new Date().getTime();
+  //     // console.log(countDownDate, now );
+  //     let distance = countDownDate -1
+
+  //     let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  //     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  //     let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // console.log(hours + "h" + minutes + "m" + seconds + "s");
+  //     if (distance < 0) {
+  //       clearInterval(x);
+  //       return
+  //     }
+  //   }
+
+  //   let x = setInterval(timer, 1000);
+
   return (
     <>
-      <form action="" className="center" onSubmit={handleInputChange}>
+      <div>
+        <span id="hour">00</span> : <span id="minute">00</span> :
+        <span id="second"> {time}</span>
+      </div>
+      {/* <p>  {hours} {minutes} {seconds}</p> */}
+      updateTime ? (
+      <form action="" className="center" onSubmit={inputChangeOnBook}>
         Book For
         <input
           className="time-input"
@@ -99,7 +167,7 @@ function Table() {
           Book
         </button>
       </form>
-
+      ) : (
       <table>
         <tbody>
           <tr>
@@ -107,34 +175,9 @@ function Table() {
           </tr>
         </tbody>
       </table>
+      )
     </>
   );
 }
 
 export default Table;
-
-// const FilteredList = () => {
-//  const [query, setQuery] = useState('');
-//  const [list, setList] = useState([]);
-
-//  const handleInputChange = (event) => {
-//     setQuery(event.target.value);
-//  };
-
-//  const filteredList = list.filter((item) => {
-//     return item.toLowerCase().includes(query.toLowerCase());
-//  });
-
-//  return (
-//     <div>
-//       <input type="text" placeholder="Search" value={query} onChange={handleInputChange} />
-//       <ul>
-//         {filteredList.map((item, index) => (
-//           <li key={index}>{item}</li>
-//         ))}
-//       </ul>
-//     </div>
-//  );
-// };
-
-// export default FilteredList;
