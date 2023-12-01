@@ -2,8 +2,6 @@ import { useRef, useState, useEffect } from "react";
 import "./Table.css";
 
 function Box({ value, onBoxClick, className }) {
-  // const [visible, invisible] = useState();
-
   return (
     <button
       className={` ${className ? "invisible" : "table-buttons"}`}
@@ -15,7 +13,7 @@ function Box({ value, onBoxClick, className }) {
 }
 
 function Table() {
-  //const [tables, setTables] = useState([]);
+
   let tables = [];
   let numOfRow = 6;
   let numOfColumn = 5;
@@ -24,37 +22,29 @@ function Table() {
   let refHour = useRef();
   let refMinute = useRef();
   let refSecond = useRef();
+  const timerIdRef = useRef(null);
+
 
   const inputChangeOnBook = (event) => {
     event.preventDefault();
-    refHour.current.value = "";
-    refMinute.current.value = "";
-    refSecond.current.value = "";
+    refHour.current.value = 0;
+    refMinute.current.value = 0;
+    refSecond.current.value = 0;
+   
+    startTimer();
   };
+
 
   for (let i = 1; i <= numOfRowCol; i++) {
     tables.push(<Box key={i} value={i} />);
   }
 
-  // function handleButtonClick(e) {
-  //   console.log("clicked");
-  //   }
-
-  // const [boxes /*setBoxes*/] = useState(Array(numOfRowCol).fill());
-
-  const [timeInput, setTimeInput] = useState({
-    id: Math.random(),
-    hour: "",
-    minute: "",
-    second: "",
-  });
-
-  // const [updateTime, setUpdateTime] = useState();
 
   function onClickHandler() {
     // return <Box className={data} />;
     console.log("clicked");
   }
+
 
   const row = (row) => (
     <table key={Math.random()}>
@@ -70,117 +60,66 @@ function Table() {
     </table>
   );
 
-  const [hour, setHour] = useState(0);
-  const [minute, setMinute] = useState(0);
-  const [second, setSecond] = useState(5);
 
-  let timerId = null;
+  const [inputValue, setInputValue] = useState({
+    hour: "",
+    minute: "",
+    second: "",
+  });
+
+
+  const onChangeHandler = (event) => {
+    const value = Number(event.target.value);
+    if (!isNaN(value)) {
+      setInputValue((prevVal) => ({
+        ...prevVal,
+        [event.target.name]: value,
+      }));
+    } 
+  };
 
   const startTimer = () => {
-    if (!timerId) {
-      timerId = setInterval(() => {
-        setSecond((prevSecond) => {
-          if (prevSecond > 0) {
-            return prevSecond - 1;
+    if (!timerIdRef.current) {
+      timerIdRef.current = setInterval(() => {
+        setInputValue((prevValues) => {
+          let { hour, minute, second } = prevValues;
+
+          let totalSeconds = hour * 3600 + minute * 60 + second;
+
+          if (totalSeconds > 0) {
+            totalSeconds -= 1;
+
+            hour = Math.floor(totalSeconds / 3600);
+            minute = Math.floor((totalSeconds % 3600) / 60);
+            second = totalSeconds % 60;
           } else {
-            setSecond(59);
-            setMinute((prevMinute) => {
-              if (prevMinute > 0) {
-                return prevMinute - 1;
-              } else {
-                setMinute(59);
-                setHour(
-                  (prevHour) => (
-                    prevHour > 0 ? prevHour - 1 : setSecond(0),
-                    setMinute(0),
-                    setHour(0)
-                  )
-                );
-              }
-              return prevMinute;
-            });
+            stopTimer();
           }
+          return { hour, minute, second };
         });
       }, 1000);
     }
   };
 
   const stopTimer = () => {
-    clearInterval(timerId);
-    timerId = null;
+    clearInterval(timerIdRef.current);
   };
 
   useEffect(() => {
-    startTimer();
 
     return () => {
       stopTimer();
     };
   }, []);
-
-  //-------------------------------------------------------------------------
-
-  // only one for Second
-
-  // const [second, setSecond] = useState(5);
-  // let secondId = null;
-
-  // const startSecondTimer = () => {
-  //   if (!secondId) {
-  //     secondId = setInterval(() => {
-  //       setSecond((prevSecond) => {
-  //         const newSecond = prevSecond - 1;
-  //         if (newSecond <= 0) {
-  //           stopSecondTimer();
-  //           return 0;
-  //         }
-  //         return newSecond;
-  //       });
-  //     }, 1000);
-  //   }
-  // };
-
-  // const stopSecondTimer = () => {
-  //   clearInterval(secondId);
-  //   secondId = null;
-  // };
-
-  // useEffect(() => {
-  //   startSecondTimer();
-  //   return () => stopSecondTimer();
-  // }, []);
-
-  //-------------------------------------------------------------------------------
-
-  //   let countDownDate = 10
-
-  //   function timer() {
-  //     // let now = new Date().getTime();
-  //     // console.log(countDownDate, now );
-  //     let distance = countDownDate -1
-
-  //     let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  //     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  //     let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  // console.log(hours + "h" + minutes + "m" + seconds + "s");
-  //     if (distance < 0) {
-  //       clearInterval(x);
-  //       return
-  //     }
-  //   }
-
-  //   let x = setInterval(timer, 1000);
-
-  //---------------------------------------------------------------------
+  
 
   return (
     <>
       <div>
-        <span id="hour">{hour}</span> : <span id="minute">{minute}</span> :
-        <span id="second"> {second}</span>
+        <span id="hour">{inputValue.hour}</span> :
+        <span id="minute"> {inputValue.minute}</span> :
+        <span id="second"> {inputValue.second}</span>
       </div>
-      {/* <p>  {hours} {minutes} {seconds}</p> */}
       updateTime ? (
       <form action="" className="center" onSubmit={inputChangeOnBook}>
         Book For
@@ -189,21 +128,30 @@ function Table() {
           type="number"
           placeholder="hour"
           name="hour"
+          value={inputValue.hour}
           ref={refHour}
+          onChange={onChangeHandler}
+          max={23}
         />
         <input
           className="time-input"
           type="number"
           placeholder="minute"
           name="minute"
+          value={inputValue.minute}
           ref={refMinute}
+          onChange={onChangeHandler}
+          max={59}
         />
         <input
           className="time-input"
           type="number"
           placeholder="second"
           name="second"
+          value={inputValue.second}
           ref={refSecond}
+          onChange={onChangeHandler}
+          max={59}
         />
         <button type="submit" style={{ width: "3.5rem" }}>
           Book
