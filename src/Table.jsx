@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect } from "react";
 import "./Table.css";
 
-function Box({ value, onBoxClick, className }) {
+function Box({ value, onBoxClick, isRed }) {
   return (
     <button
-      className={` ${className ? "invisible" : "table-buttons"}`}
+      className={`table-buttons ${isRed ? "red-box" : ""}`}
       onClick={onBoxClick}
     >
       Table{value}
@@ -12,12 +12,9 @@ function Box({ value, onBoxClick, className }) {
   );
 }
 
-function Table() {
 
-  let tables = [];
-  let numOfRow = 6;
-  let numOfColumn = 5;
-  let numOfRowCol = numOfRow * numOfColumn;
+function Table() {
+  //for Timer
 
   let refHour = useRef();
   let refMinute = useRef();
@@ -30,35 +27,9 @@ function Table() {
     refHour.current.value = 0;
     refMinute.current.value = 0;
     refSecond.current.value = 0;
-   
+
     startTimer();
   };
-
-
-  for (let i = 1; i <= numOfRowCol; i++) {
-    tables.push(<Box key={i} value={i} />);
-  }
-
-
-  function onClickHandler() {
-    // return <Box className={data} />;
-    console.log("clicked");
-  }
-
-
-  const row = (row) => (
-    <table key={Math.random()}>
-      <tbody>
-        <tr key={row}>
-          {[...Array(numOfRow).keys()].map((column) => (
-            <td key={column}>
-              <Box value={""} onBoxClick={() => onClickHandler()} />
-            </td>
-          ))}
-        </tr>
-      </tbody>
-    </table>
-  );
 
 
   const [inputValue, setInputValue] = useState({
@@ -75,8 +46,9 @@ function Table() {
         ...prevVal,
         [event.target.name]: value,
       }));
-    } 
+    }
   };
+
 
   const startTimer = () => {
     if (!timerIdRef.current) {
@@ -101,17 +73,34 @@ function Table() {
     }
   };
 
+
   const stopTimer = () => {
     clearInterval(timerIdRef.current);
   };
 
   useEffect(() => {
-
     return () => {
       stopTimer();
     };
   }, []);
-  
+
+
+  // for Box
+
+  const numOfRow = 5;
+  const numOfColumn = 6;
+  const numOfRowCol = numOfRow * numOfColumn;
+
+  const [boxStates, setBoxStates] = useState(Array(numOfRowCol).fill(false));
+
+
+  const onBoxClickState = (index) => {
+    setBoxStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = !newStates[index];
+      return newStates;
+    });
+  };
 
   return (
     <>
@@ -120,7 +109,7 @@ function Table() {
         <span id="minute"> {inputValue.minute}</span> :
         <span id="second"> {inputValue.second}</span>
       </div>
-      updateTime ? (
+
       <form action="" className="center" onSubmit={inputChangeOnBook}>
         Book For
         <input
@@ -157,15 +146,28 @@ function Table() {
           Book
         </button>
       </form>
-      ) : (
+
       <table>
         <tbody>
-          <tr>
-            <td>{[...Array(numOfColumn).keys()].map(row)}</td>
-          </tr>
+          {[...Array(numOfRow).keys()].map((row) => (
+            <tr key={row}>
+              {[...Array(numOfColumn).keys()].map((column) => {
+                const index = row * numOfColumn + column;
+                return (
+                  <td key={column}>
+                    <Box
+                      key={index}
+                      value={index + 1}
+                      isRed={boxStates[index]}
+                      onBoxClick={() => onBoxClickState(index)}
+                    />
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
         </tbody>
       </table>
-      )
     </>
   );
 }
