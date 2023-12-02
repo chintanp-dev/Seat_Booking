@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect } from "react";
 import "./Table.css";
 
-function Box({ value, onBoxClick, isRed }) {
+function Box({ value, onBoxClick, isInvisible }) {
   return (
     <button
-      className={`table-buttons ${isRed ? "red-box" : ""}`}
+      className={`table-buttons ${isInvisible ? "invisible" : ""}`}
       onClick={onBoxClick}
     >
       Table{value}
@@ -158,7 +158,7 @@ function Table() {
                     <Box
                       key={index}
                       value={index + 1}
-                      isRed={boxStates[index]}
+                      isInvisible={boxStates[index]}
                       onBoxClick={() => onBoxClickState(index)}
                     />
                   </td>

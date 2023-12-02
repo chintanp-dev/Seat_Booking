@@ -10,7 +10,8 @@
   border: none;
 }
 
-.red-box {
+.invisible {
+  color: white;
   background-color: white;
 }
 
