@@ -86,6 +86,8 @@ function CountDownTimer({onTimerComplete}) {
   //   };
   // }, []);
 
+  console.log(inputValue.hour + ":" + inputValue.minute + ":" + inputValue.second);
+
 
   return (
     <>
