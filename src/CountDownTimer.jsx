@@ -1,20 +1,18 @@
 import { useRef, useState, useEffect } from "react";
 import "./CountDownTimer.css";
 
-function Box({ value, onBoxClick, isInvisible }) {
-  return (
-    <button
-      className={`table-buttons ${isInvisible ? "invisible" : ""}`}
-      onClick={onBoxClick}
-    >
-       <b>Table <br /> {value}</b>
-    </button>
-  );
-}
-
+// function Box({ value, onBoxClick, isInvisible }) {
+//   return (
+//     <button
+//       className={`table-buttons ${isInvisible ? "invisible" : ""}`}
+//       onClick={onBoxClick}
+//     >
+//        <b>Table <br /> {value}</b>
+//     </button>
+//   );
+// }
 
 function CountDownTimer() {
-  //for Timer
 
   let refHour = useRef();
   let refMinute = useRef();
@@ -22,14 +20,9 @@ function CountDownTimer() {
   const timerIdRef = useRef(null);
 
 
-  const inputChangeOnBook = (event) => {
-    event.preventDefault();
-    refHour.current.value = 0;
-    refMinute.current.value = 0;
-    refSecond.current.value = 0;
-
-    startTimer();
-  };
+  const numOfRow = 5;
+  const numOfColumn = 6;
+  const numOfRowCol = numOfRow * numOfColumn;
 
 
   const [inputValue, setInputValue] = useState({
@@ -37,6 +30,43 @@ function CountDownTimer() {
     minute: "",
     second: "",
   });
+
+
+  const [boxStates, setBoxStates] = useState(Array(numOfRowCol).fill(false));
+  const [showCountdownTimer, setShowCountdownTimer] = useState(false);
+  const [countdownPosition, setCountdownPosition] = useState({
+    left: 0,
+    top: 0,
+  });
+
+
+  const onBoxClick = (index, event) => {
+
+    setBoxStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = !newStates[index];
+      return newStates;
+    });
+
+    // for Positioning of inputs
+    const buttonRect = event.target.getBoundingClientRect();
+    setCountdownPosition({
+      left: buttonRect.left,
+      top: buttonRect.top + buttonRect.height,
+    });
+
+    setShowCountdownTimer(true);
+  };
+
+
+  const inputChangeOnBook = (event) => {
+    event.preventDefault();
+    // refHour.current.value = 0;
+    // refMinute.current.value = 0;
+    // refSecond.current.value = 0;
+
+    startTimer();
+  };
 
 
   const onChangeHandler = (event) => {
@@ -78,6 +108,7 @@ function CountDownTimer() {
     clearInterval(timerIdRef.current);
   };
 
+
   useEffect(() => {
     return () => {
       stopTimer();
@@ -85,67 +116,71 @@ function CountDownTimer() {
   }, []);
 
 
-  // for Box
+  // const [boxStates, setBoxStates] = useState(Array(numOfRowCol).fill(false));
 
-  const numOfRow = 5;
-  const numOfColumn = 6;
-  const numOfRowCol = numOfRow * numOfColumn;
-
-  const [boxStates, setBoxStates] = useState(Array(numOfRowCol).fill(false));
-
-
-  const onBoxClickState = (index) => {
-    setBoxStates((prevStates) => {
-      const newStates = [...prevStates];
-      newStates[index] = !newStates[index];
-      return newStates;
-    });
-  };
+  // const onBoxClickState = (index) => {
+  //   setBoxStates((prevStates) => {
+  //     const newStates = [...prevStates];
+  //     newStates[index] = !newStates[index];
+  //     return newStates;
+  //   });
+  // };
 
   return (
     <>
-      <div>
-        <span id="hour">{inputValue.hour}</span> :
-        <span id="minute"> {inputValue.minute}</span> :
-        <span id="second"> {inputValue.second}</span>
-      </div>
+      {showCountdownTimer && (
+        <div
+          className="countdown-timer-input"
+          style={{
+            position: "absolute",
+            left: countdownPosition.left,
+            top: countdownPosition.top,
+          }}
+        >
+          {/* <div>
+            <span id="hour">{inputValue.hour}</span> :
+            <span id="minute"> {inputValue.minute}</span> :
+            <span id="second"> {inputValue.second}</span>
+          </div> */}
 
-      <form action="" className="center" onSubmit={inputChangeOnBook}>
-        Book For
-        <input
-          className="time-input"
-          type="number"
-          placeholder="hour"
-          name="hour"
-          value={inputValue.hour}
-          ref={refHour}
-          onChange={onChangeHandler}
-          max={23}
-        />
-        <input
-          className="time-input"
-          type="number"
-          placeholder="minute"
-          name="minute"
-          value={inputValue.minute}
-          ref={refMinute}
-          onChange={onChangeHandler}
-          max={59}
-        />
-        <input
-          className="time-input"
-          type="number"
-          placeholder="second"
-          name="second"
-          value={inputValue.second}
-          ref={refSecond}
-          onChange={onChangeHandler}
-          max={59}
-        />
-        <button type="submit" style={{ width: "3.5rem" }}>
-          Book
-        </button>
-      </form>
+          <form action="" className="center" onSubmit={inputChangeOnBook}>
+            Book For
+            <input
+              className="time-input"
+              type="number"
+              placeholder="hour"
+              name="hour"
+              value={inputValue.hour}
+              ref={refHour}
+              onChange={onChangeHandler}
+              max={23}
+            />
+            <input
+              className="time-input"
+              type="number"
+              placeholder="minute"
+              name="minute"
+              value={inputValue.minute}
+              ref={refMinute}
+              onChange={onChangeHandler}
+              max={59}
+            />
+            <input
+              className="time-input"
+              type="number"
+              placeholder="second"
+              name="second"
+              value={inputValue.second}
+              ref={refSecond}
+              onChange={onChangeHandler}
+              max={59}
+            />
+            <button className="book-button" type="submit">
+              Book
+            </button>
+          </form>
+        </div>
+      )}
 
       <table>
         <tbody>
@@ -155,12 +190,14 @@ function CountDownTimer() {
                 const index = row * numOfColumn + column;
                 return (
                   <td key={column}>
-                    <Box
-                      key={index}
-                      value={index + 1}
-                      isInvisible={boxStates[index]}
-                      onBoxClick={() => onBoxClickState(index)}
-                    />
+                    <button
+                      className={`table-buttons ${
+                        boxStates[index] ? "invisible" : ""
+                      }`}
+                      onClick={(event) => onBoxClick(index, event)}
+                    >
+                      Table <br /> {index + 1}
+                    </button>
                   </td>
                 );
               })}
