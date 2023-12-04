@@ -1,6 +1,6 @@
 import Navbar from "./Navbar";
 import SearchBar from "./SearchBar";
-import Table from "./Table";
+import CountDownTimer from "./CountDownTimer";
 import "./App.css";
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
     <main>
       <Navbar />
       <SearchBar />
-      <Table />
+      <CountDownTimer />
     </main>
   );
 }

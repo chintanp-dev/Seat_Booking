@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import "./Table.css";
+import "./CountDownTimer.css";
 
 function Box({ value, onBoxClick, isInvisible }) {
   return (
@@ -7,13 +7,13 @@ function Box({ value, onBoxClick, isInvisible }) {
       className={`table-buttons ${isInvisible ? "invisible" : ""}`}
       onClick={onBoxClick}
     >
-      Table{value}
+       <b>Table <br /> {value}</b>
     </button>
   );
 }
 
 
-function Table() {
+function CountDownTimer() {
   //for Timer
 
   let refHour = useRef();
@@ -172,4 +172,4 @@ function Table() {
   );
 }
 
-export default Table;
+export default CountDownTimer;
