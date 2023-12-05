@@ -1,20 +1,10 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
+import SearchBar from "./SearchBar";
 import "./CountDownTimer.css";
 
-// function Box({ value, onBoxClick, isInvisible }) {
-//   return (
-//     <button
-//       className={`table-buttons ${isInvisible ? "invisible" : ""}`}
-//       onClick={onBoxClick}
-//     >
-//        <b>Table <br /> {value}</b>
-//     </button>
-//   );
-// }
+function CountDownTimer({ onTimerComplete }) {
 
-
-function CountDownTimer({onTimerComplete}) {
-
+  const [showInputFields, setShowInputFields] = useState(true);
   const [inputValue, setInputValue] = useState({
     hour: "",
     minute: "",
@@ -22,16 +12,19 @@ function CountDownTimer({onTimerComplete}) {
   });
 
 
-  // let refHour = useRef();
-  // let refMinute = useRef();
-  // let refSecond = useRef();
   const timerIdRef = useRef(null);
 
 
   const startTimer = () => {
+
     if (!timerIdRef.current) {
+
+      setShowInputFields(false);
+
       timerIdRef.current = setInterval(() => {
+
         setInputValue((prevValues) => {
+
           let { hour, minute, second } = prevValues;
 
           let totalSeconds = hour * 3600 + minute * 60 + second;
@@ -51,12 +44,15 @@ function CountDownTimer({onTimerComplete}) {
     }
   };
 
-
+  
   const inputChangeOnBook = (event) => {
     event.preventDefault();
-    // refHour.current.value = 0;
-    // refMinute.current.value = 0;
-    // refSecond.current.value = 0;
+
+    // setBoxStates((prevStates) => {
+    //   const newStates = [...prevStates];
+    //   newStates[index] = !newStates[index];
+    //   return newStates;
+    // });
 
     startTimer();
   };
@@ -75,9 +71,9 @@ function CountDownTimer({onTimerComplete}) {
 
   const stopTimer = () => {
     clearInterval(timerIdRef.current);
-    onTimerComplete()
+    onTimerComplete();
   };
-
+  
 
   // useEffect(() => {
   //   return () => {
@@ -86,16 +82,16 @@ function CountDownTimer({onTimerComplete}) {
   //   };
   // }, []);
 
-  console.log(inputValue.hour + ":" + inputValue.minute + ":" + inputValue.second);
+  console.log(
+    inputValue.hour + ":" + inputValue.minute + ":" + inputValue.second
+  );
 
 
   return (
     <>
-      <div className="countdown-timer-input">
-
-        <form action="" className="center" onSubmit={inputChangeOnBook}>
+      <form action="" className="center" onSubmit={inputChangeOnBook}>
+        <div className={`input-fields ${showInputFields ? "" : "booked"}`}>
           Book For
-          
           <input
             className="time-input"
             type="number"
@@ -132,19 +128,31 @@ function CountDownTimer({onTimerComplete}) {
           <button className="book-button" type="submit">
             Book
           </button>
-
-        </form>
-      </div>
+        </div>
+      </form>
     </>
   );
 }
 
-function TableButtons({ index, boxStates, onBoxClick, onTimerComplete }) {
+
+function TableButtons({
+  index,
+  boxStates,
+  onBoxClick,
+  onTimerComplete,
+  mergedTables,
+}) {
+  const isMerged = mergedTables.includes(index);
+  const hasActiveTimer = boxStates[index];
+
   return (
     <td>
       <button
-        className={`table-buttons ${boxStates[index] ? "invisible" : ""}`}
+        className={`table-buttons ${boxStates[index] ? "invisible" : ""} ${
+          isMerged ? "merged" : ""
+        }`}
         onClick={() => onBoxClick(index)}
+        style={{ backgroundColor: isMerged && !hasActiveTimer ? "blue" : "" }}
       >
         Table <br /> {index + 1}
       </button>
@@ -155,62 +163,87 @@ function TableButtons({ index, boxStates, onBoxClick, onTimerComplete }) {
   );
 }
 
+
 function TableBox() {
-    const numOfRow = 5;
-    const numOfColumn = 6;
-  
-    const [boxStates, setBoxStates] = useState(Array(numOfRow * numOfColumn).fill(false));
-  
-    const onBoxClick = (index) => {
-      setBoxStates((prevStates) => {
-        const newStates = [...prevStates];
-        newStates[index] = !newStates[index];
-        return newStates;
-      });
-    };
-  
-    const onTimerComplete = (index) => {
-      setBoxStates((prevStates) => {
-        const newStates = [...prevStates];
-        newStates[index] = false;
-        return newStates;
-      });
-    };
-  
-    const TableRow = () => {
-      return [...Array(numOfRow).keys()].map((row) => (
-        <tr key={row}>
-          {TableColumns(row)}
-        </tr>
-      ));
-    };
-  
-    const TableColumns = (row) => {
-      return [...Array(numOfColumn).keys()].map((column) => {
-        const index = row * numOfColumn + column;
-        return (
-          <TableButtons
-            key={column}
-            index={index}
-            boxStates={boxStates}
-            onBoxClick={onBoxClick}
-            onTimerComplete={onTimerComplete}
-          />
-        );
-      });
-    };
-  
-    return (
-      <>
-        <table>
-          <tbody>
-            {TableRow()}
-          </tbody>
-        </table>
-      </>
-    );
-  }
-  
-  export default TableBox;
+
+  const numOfRow = 5;
+  const numOfColumn = 7;
 
 
+  const [boxStates, setBoxStates] = useState(
+    Array(numOfRow * numOfColumn).fill(false)
+  );
+
+
+  const [mergedTables, setMergedTables] = useState([]);
+
+  const onBoxClick = (index) => {
+    setBoxStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = !newStates[index];
+      return newStates;
+    });
+  };
+
+
+  const onTimerComplete = (index) => {
+    setBoxStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = false;
+      return newStates;
+    });
+  };
+
+
+  const handleMerge = () => {
+    const inputValues = document.querySelector(".main-input").value;
+    const tablesToMerge = inputValues
+      .split(",")
+      .map((table) => parseInt(table, 10) - 1);
+
+    const validTablesToMerge = tablesToMerge.filter((table) => {
+      const isAdjacent =
+        mergedTables.includes(table - 1) || mergedTables.includes(table + 1);
+      const hasActiveTimer = boxStates[table];
+      return isAdjacent || hasActiveTimer;
+    });
+
+    setMergedTables([...mergedTables, ...validTablesToMerge]);
+  };
+
+
+  const TableRow = () => {
+    return [...Array(numOfRow).keys()].map((row) => (
+      <tr key={row}>{TableColumns(row)}</tr>
+    ));
+  };
+
+
+  const TableColumns = (row) => {
+    return [...Array(numOfColumn).keys()].map((column) => {
+      const index = row * numOfColumn + column;
+      return (
+        <TableButtons
+          key={column}
+          index={index}
+          boxStates={boxStates}
+          onBoxClick={onBoxClick}
+          onTimerComplete={onTimerComplete}
+          mergedTables={mergedTables}
+        />
+      );
+    });
+  };
+  
+
+  return (
+    <>
+      <SearchBar onMerge={handleMerge} />
+      <table>
+        <tbody>{TableRow()}</tbody>
+      </table>
+    </>
+  );
+}
+
+export default TableBox;
