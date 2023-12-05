@@ -152,7 +152,7 @@ function TableButtons({
           isMerged ? "merged" : ""
         }`}
         onClick={() => onBoxClick(index)}
-        style={{ backgroundColor: isMerged && !hasActiveTimer ? "blue" : "" }}
+        style={{ backgroundColor: isMerged && !hasActiveTimer ? "rgb(194, 188, 188)" : "" }}
       >
         Table <br /> {index + 1}
       </button>
@@ -234,7 +234,7 @@ function TableBox() {
       );
     });
   };
-  
+
 
   return (
     <>
